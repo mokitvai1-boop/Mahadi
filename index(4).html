@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DXA BD TEAM — Admin Login</title>
+<link rel="icon" href="https://i.postimg.cc/hjQHS0gv/57a20b98-ed4e-499c-828f-ff46927b8e7e.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:20px;color:#fff}
+.container{max-width:1150px;margin:0 auto}
+#loginScreen{max-width:420px;margin:60px auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:25px;padding:40px 30px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center}
+#loginScreen img{width:80px;height:80px;border-radius:50%;border:3px solid #ffd700;box-shadow:0 0 25px rgba(255,215,0,.6);margin-bottom:15px}
+#loginScreen h2{color:#ffd700;margin-bottom:8px;font-size:22px}
+#loginScreen p{color:#a0a0c0;font-size:12px;margin-bottom:22px}
+#loginScreen input{width:100%;padding:13px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:15px;outline:none;margin-bottom:14px}
+#loginScreen input:focus{border-color:#ffd700}
+#errorMsg{background:rgba(255,45,85,.2);border:1px solid #ff2d55;color:#ff2d55;padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px;display:none}
+#errorMsg.show{display:block}
+.btn{padding:12px 22px;border:none;border-radius:12px;background:linear-gradient(45deg,#ffd700,#ff8c00);color:#000;font-size:14px;font-weight:800;cursor:pointer;transition:.3s;display:inline-block;text-align:center;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,215,0,.4)}
+.btn-full{width:100%;padding:14px;font-size:16px;text-transform:uppercase;letter-spacing:1px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.btn-danger{background:#ff2d55;color:#fff}
+.btn-success{background:linear-gradient(45deg,#00ff88,#00b371);color:#000}
+.btn-warn{background:linear-gradient(45deg,#ff8c00,#ff5500);color:#fff}
+.btn-info{background:linear-gradient(45deg,#00d4ff,#0088cc);color:#fff}
+.btn-sm{padding:6px 12px;font-size:11px;margin:2px}
+#dashboard{display:none}
+.header{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:18px 25px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.header .brand{display:flex;align-items:center;gap:12px}
+.header .brand img{width:45px;height:45px;border-radius:50%;border:2px solid #ffd700}
+.header h1{font-size:18px}.header h1 span{color:#ffd700}.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:15px;padding:18px;text-align:center}
+.stat-card .icon{font-size:26px;margin-bottom:6px}.stat-card .num{font-size:24px;font-weight:800;color:#ffd700}.stat-card .lbl{color:#a0a0c0;font-size:11px;margin-top:4px}
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;background:rgba(255,255,255,.05);padding:7px;border-radius:12px}
+.tab-btn{padding:10px 16px;border:none;border-radius:8px;background:transparent;color:#a0a0c0;font-size:12px;font-weight:700;cursor:pointer;transition:.3s}
+.tab-btn.active{background:linear-gradient(45deg,#ffd700,#ff8c00);color:#000}
+.tab-content{display:none}.tab-content.active{display:block}
+.panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:15px;padding:22px;margin-bottom:20px}
+.panel h3{color:#ffd700;margin-bottom:16px;font-size:17px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:600px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}th{color:#ffd700;font-weight:700;background:rgba(0,0,0,.2)}td{color:#d0d0e0}tr:hover{background:rgba(255,255,255,.03)}
+input,textarea,select{width:100%;padding:10px 13px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:13px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:#ffd700}textarea{min-height:70px;resize:vertical}select option{background:#16213e;color:#fff}
+label{display:block;color:#e0e0ff;font-size:12px;margin:10px 0 6px;font-weight:600}.form-group{margin-bottom:12px}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.badge-banned,.badge-lock{background:rgba(255,45,85,.2);color:#ff2d55;border:1px solid #ff2d55}
+.badge-active{background:rgba(0,255,136,.2);color:#00ff88;border:1px solid #00ff88}
+.badge-hidden{background:rgba(255,140,0,.2);color:#ff8c00;border:1px solid #ff8c00}
+.badge-vip{background:linear-gradient(45deg,#ffd700,#ff8c00);color:#000}.badge-verified{background:linear-gradient(45deg,#00d4ff,#0088cc);color:#fff}
+.empty{text-align:center;color:#8888aa;padding:30px}.hint{color:#8888aa;font-size:11px;margin-top:6px;line-height:1.5}
+.music-current{background:linear-gradient(45deg,rgba(255,215,0,.15),rgba(255,140,0,.15));border:1px solid rgba(255,215,0,.4);border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px;color:#ffd700;word-break:break-all}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1000;align-items:center;justify-content:center;padding:20px}.modal.active{display:flex}
+.modal-content{background:#16213e;border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:25px;max-width:620px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-content h3{color:#ffd700;margin-bottom:16px;font-size:18px}.modal-content .close-btn{float:right;background:transparent;border:none;color:#fff;font-size:22px;cursor:pointer}
+.user-detail-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:13px}
+.user-detail-row span:first-child{color:#a0a0c0}.user-detail-row span:last-child{color:#ffd700;font-weight:700;text-align:right;overflow-wrap:anywhere}
+.user-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:15px}
+.msg-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;margin-bottom:8px}
+.msg-item .from{color:#ffd700;font-size:12px;font-weight:700}.msg-item .time{color:#8888aa;font-size:10px}.msg-item .text{color:#e0e0ff;font-size:13px;margin-top:6px;line-height:1.5;overflow-wrap:anywhere}
+.announcement-preview{padding:12px;border:1px dashed rgba(255,215,0,.4);border-radius:10px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:600px){body{padding:12px}#loginScreen{margin:25px auto;padding:30px 20px}.header{padding:15px}.header h1{font-size:15px}.panel{padding:15px}.tabs{gap:3px}.tab-btn{padding:9px 10px;font-size:11px}}
+</style>
+</head>
+<body>
+<div id="loginScreen">
+  <img src="https://i.postimg.cc/hjQHS0gv/57a20b98-ed4e-499c-828f-ff46927b8e7e.png" alt="DXA">
+  <h2>🔐 Admin Login</h2><p>DXA BD TEAM - Control Panel</p>
+  <div id="errorMsg" role="alert"></div>
+  <input type="email" id="inputEmail" placeholder="Email" autocomplete="username">
+  <input type="password" id="inputPass" placeholder="Password" autocomplete="current-password">
+  <button class="btn btn-full" id="loginBtn" onclick="login()">Login</button>
+  <p style="margin-top:15px;color:#999;font-size:11px">শুধুমাত্র Admin এর জন্য</p>
+</div>
+
+<div id="dashboard"><div class="container">
+  <div class="header"><div class="brand">
+    <img src="https://i.postimg.cc/hjQHS0gv/57a20b98-ed4e-499c-828f-ff46927b8e7e.png" alt="DXA">
+    <h1>Admin Panel <span>DXA BD TEAM</span></h1>
+  </div><div class="header-actions">
+    <a href="index.html" target="_blank" rel="noopener" class="btn btn-success btn-sm">🌐 Site</a>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+  </div></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="icon">🎂</div><div class="num" id="statWishes">0</div><div class="lbl">Wishes</div></div>
+    <div class="stat-card"><div class="icon">👥</div><div class="num" id="statUsers">0</div><div class="lbl">Users</div></div>
+    <div class="stat-card"><div class="icon">👁️</div><div class="num" id="statViews">0</div><div class="lbl">Views</div></div>
+    <div class="stat-card"><div class="icon">🚫</div><div class="num" id="statBanned">0</div><div class="lbl">Banned</div></div>
+    <div class="stat-card"><div class="icon">💬</div><div class="num" id="statMessages">0</div><div class="lbl">Messages</div></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('users',this)">👥 Users</button>
+    <button class="tab-btn" onclick="switchTab('wishes',this)">🎂 Wishes</button>
+    <button class="tab-btn" onclick="switchTab('music',this)">🎵 Music</button>
+    <button class="tab-btn" onclick="switchTab('messages',this)">💬 Messages</button>
+    <button class="tab-btn" onclick="switchTab('announce',this)">📢 Announce</button>
+    <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ Settings</button>
+  </div>
+  <div class="tab-content active" id="tab-users"><div class="panel"><h3>👥 User Control Panel</h3><div class="table-wrap">
+    <table><thead><tr><th>User</th><th>Wishes</th><th>Views</th><th>Badge</th><th>Status</th><th>Actions</th></tr></thead><tbody id="usersTable"></tbody></table>
+  </div></div></div>
+  <div class="tab-content" id="tab-wishes"><div class="panel"><h3>🎂 সব Wish Control</h3><div class="table-wrap">
+    <table><thead><tr><th>Receiver</th><th>Sender</th><th>Message</th><th>Views</th><th>Status</th><th>Actions</th></tr></thead><tbody id="wishesTable"></tbody></table>
+  </div></div></div>
+  <div class="tab-content" id="tab-music">
+    <div class="panel"><h3>🎵 Website Music সেটআপ</h3><div class="music-current" id="currentMusicBox">লোড হচ্ছে...</div>
+      <div class="form-group"><label>🎵 Music URL (Direct MP3 লিংক)</label><input type="url" id="musicUrlInput" placeholder="https://example.com/song.mp3">
+      <p class="hint">শুধু আপনার ব্যবহারের অনুমতি আছে এমন বা royalty-free অডিওর direct MP3 URL ব্যবহার করুন। Save করলে এই ব্রাউজারের local storage-এ থাকবে; সব User-এর কাছে পৌঁছাবে না, যদি না shared database/backend যুক্ত করা হয়।</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-success" onclick="saveMusic()">💾 Save Music</button><button class="btn btn-info" onclick="previewMusic()">▶️ Preview</button><button class="btn btn-danger" onclick="resetMusic()">🔄 Reset</button></div>
+      <div style="margin-top:12px"><audio id="musicPreview" controls style="width:100%"></audio></div>
+    </div>
+    <div class="panel"><h3>🎧 Sample Free MP3</h3><div style="font-size:12px;color:#a0a0c0;line-height:1.9;overflow-wrap:anywhere">
+      <p>https://cdn.pixabay.com/audio/2022/10/25/audio_946bc8c14d.mp3</p><p>https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3</p><p>https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3</p>
+    </div></div>
+  </div>
+  <div class="tab-content" id="tab-messages"><div class="panel"><h3>💬 User Messages (Admin → User)</h3>
+    <div class="form-group"><label>কাকে পাঠাবেন</label><select id="msgTo"><option value="all">🌍 সব User</option></select><input type="text" id="msgToCustom" placeholder="অথবা নাম টাইপ করুন" style="margin-top:8px"></div>
+    <div class="form-group"><label>মেসেজ</label><textarea id="msgText" placeholder="User যেটা দেখবে..."></textarea></div>
+    <button class="btn btn-success" onclick="sendMessage()">📤 পাঠান</button> <button class="btn btn-danger" onclick="clearAllMessages()">🗑️ সব মুছুন</button>
+    <h3 style="margin-top:25px">📨 পাঠানো সব মেসেজ</h3><div id="messagesList"></div>
+  </div></div>
+  <div class="tab-content" id="tab-announce"><div class="panel"><h3>📢 Announcement</h3>
+    <div class="form-group"><label>সাইটে দেখানোর ঘোষণা</label><textarea id="announceInput" placeholder="যেমন: এই ঈদে বিশেষ Wish তৈরি করুন..."></textarea></div>
+    <button class="btn btn-success" onclick="saveAnnounce()">💾 Save</button> <button class="btn btn-danger" onclick="clearAnnounce()">🗑️ Clear</button>
+    <div class="announcement-preview" id="announcePreview">এখানে ঘোষণার preview দেখাবে।</div>
+  </div></div>
+  <div class="tab-content" id="tab-settings"><div class="panel"><h3>⚙️ System Settings</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-secondary" onclick="exportData()">📥 Export Backup</button><button class="btn btn-danger" onclick="deleteAllWishes()">🗑️ সব Wish ডিলিট</button><button class="btn btn-danger" onclick="deleteAllUsers()">🗑️ সব User ডিলিট</button><button class="btn btn-danger" onclick="resetAll()">⚠️ Full Reset</button></div>
+  </div><div class="panel"><h3>📊 Storage</h3><div id="storageInfo" style="color:#a0a0c0;font-size:13px;line-height:1.9"></div></div></div>
+</div></div>
+
+<div class="modal" id="userModal"><div class="modal-content"><button class="close-btn" onclick="closeUserModal()">✕</button><h3 id="userModalTitle">👤 User</h3><div id="userDetailBody"></div><div class="user-actions-grid" id="userActionsGrid"></div></div></div>
+<div class="modal" id="wishEditModal"><div class="modal-content"><button class="close-btn" onclick="closeWishEdit()">✕</button><h3>✏️ Wish Edit</h3>
+  <label>প্রাপকের নাম</label><input type="text" id="adminEditReceiver"><label>জন্ম তারিখ</label><input type="date" id="adminEditBirthDate"><label>বার্তা</label><textarea id="adminEditMessage"></textarea>
+  <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-success" style="flex:1" onclick="adminSaveWishEdit()">💾 Save</button><button class="btn btn-secondary" style="flex:1" onclick="closeWishEdit()">Cancel</button></div>
+</div></div>
+
+<script>
+/*
+  DEMO ONLY: এই login credentials JavaScript-এ আছে, তাই public website-এ নিরাপদ নয়।
+  Production ব্যবহারের আগে server-side authentication (যেমন Supabase Auth + RLS) ব্যবহার করুন।
+*/
+const ADMIN_EMAIL = 'mahadi123@gmail.com';
+const ADMIN_PASS = 'mahadi@12';
+const MAX_ATTEMPTS = 3;
+const LOCK_MS = 5 * 60 * 1000;
+let editingWishId = null;
+
+function readJSON(key, fallback){try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));}catch(e){return fallback;}}
+function getWishes(){return readJSON('dxaWishes',[])}
+function setWishes(w){localStorage.setItem('dxaWishes',JSON.stringify(w))}
+function getUsers(){return readJSON('dxaUsers',[])}
+function setUsers(u){localStorage.setItem('dxaUsers',JSON.stringify(u))}
+function getMessages(){return readJSON('dxaMessages',[])}
+function setMessages(m){localStorage.setItem('dxaMessages',JSON.stringify(m))}
+function escapeHtml(t){return String(t ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function makeId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function login(){
+  const err=document.getElementById('errorMsg'), btn=document.getElementById('loginBtn');
+  const lockUntil=Number(localStorage.getItem('dxaAdminLockUntil')||0);
+  if(Date.now()<lockUntil){err.textContent='🔒 Locked! '+Math.ceil((lockUntil-Date.now())/1000)+' সেকেন্ড পর আবার চেষ্টা করুন।';err.classList.add('show');return;}
+  const email=document.getElementById('inputEmail').value.trim().toLowerCase(), pass=document.getElementById('inputPass').value;
+  if(email===ADMIN_EMAIL.toLowerCase() && pass===ADMIN_PASS){
+    localStorage.removeItem('dxaAdminAttempts');localStorage.removeItem('dxaAdminLockUntil');
+    sessionStorage.setItem('dxaAdminLoggedIn','1');err.classList.remove('show');showDashboard();
+  }else{
+    let attempts=Number(localStorage.getItem('dxaAdminAttempts')||0)+1;localStorage.setItem('dxaAdminAttempts',attempts);
+    if(attempts>=MAX_ATTEMPTS){localStorage.setItem('dxaAdminLockUntil',String(Date.now()+LOCK_MS));localStorage.setItem('dxaAdminAttempts','0');err.textContent='🔒 ৩ বার ভুল! ৫ মিনিট Locked!';btn.disabled=true;setTimeout(()=>{btn.disabled=false;err.classList.remove('show')},LOCK_MS);}
+    else err.textContent='❌ ভুল Email/Password! বাকি: '+(MAX_ATTEMPTS-attempts)+' বার';
+    err.classList.add('show');document.getElementById('inputPass').value='';
+  }
+}
+function logout(){if(!confirm('Logout করবেন?'))return;sessionStorage.removeItem('dxaAdminLoggedIn');location.reload();}
+function showDashboard(){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';refreshAll();}
+window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('dxaAdminLoggedIn')==='1')showDashboard();});
+document.getElementById('inputPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+function switchTab(name,btn){document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
+function refreshAll(){refreshStats();refreshUsers();refreshWishes();refreshMusicBox();refreshAnnounce();refreshStorage();refreshMessageSelect();refreshMessagesList();}
+function refreshStats(){const w=getWishes(),u=getUsers();document.getElementById('statWishes').textContent=w.length;document.getElementById('statUsers').textContent=u.length;document.getElementById('statViews').textContent=w.reduce((s,x)=>s+(Number(x.views)||0),0);document.getElementById('statBanned').textContent=u.filter(x=>x.banned).length;document.getElementById('statMessages').textContent=getMessages().length;}
+function refreshUsers(){
+ const users=getUsers(),wishes=getWishes(),tbody=document.getElementById('usersTable');
+ if(!users.length){tbody.innerHTML='<tr><td colspan="6" class="empty">😴 কোনো User নেই</td></tr>';return;}
+ tbody.innerHTML=users.map(u=>{
+  const uw=wishes.filter(w=>String(w.senderName||'').toLowerCase()===String(u.name||'').toLowerCase()),views=uw.reduce((s,w)=>s+(Number(w.views)||0),0);
+  let badge='<span class="badge badge-active">Normal</span>';if(u.title==='VIP')badge='<span class="badge badge-vip">⭐ VIP</span>';if(u.title==='VERIFIED')badge='<span class="badge badge-verified">✅ Verified</span>';
+  return `<tr><td><b style="color:#ffd700">${escapeHtml(u.name)}</b> ${u.locked?'<span class="badge badge-lock">🔒</span>':''}</td><td>${uw.length}</td><td>👁️ ${views}</td><td>${badge}</td><td>${u.banned?'<span class="badge badge-banned">Banned</span>':'<span class="badge badge-active">Active</span>'}</td><td><button class="btn btn-sm btn-info" onclick="openUserModalByIndex('${u.id||''}','${escapeHtml(u.name)}')">⚙️ Manage</button></td></tr>`;
+ }).join('');
+}
+function openUserModalByIndex(id,name){const users=getUsers();let u=users.find(x=>id && x.id===id)||users.find(x=>x.name===name);if(u)openUserModal(u.name);}
+function openUserModal(name){
+ const users=getUsers(),u=users.find(x=>x.name===name);if(!u)return;
+ const wishes=getWishes(),uw=wishes.filter(w=>String(w.senderName||'').toLowerCase()===name.toLowerCase()),views=uw.reduce((s,w)=>s+(Number(w.views)||0),0);
+ document.getElementById('userModalTitle').textContent='👤 '+name;
+ document.getElementById('userDetailBody').innerHTML=`<div class="user-detail-row"><span>📅 Joined</span><span>${u.joinedAt?escapeHtml(new Date(u.joinedAt).toLocaleDateString('bn-BD')):'—'}</span></div><div class="user-detail-row"><span>🎂 Wish</span><span>${uw.length}</span></div><div class="user-detail-row"><span>👁️ Views</span><span>${views}</span></div><div class="user-detail-row"><span>📊 Status</span><span>${u.banned?'🚫 Banned':'✅ Active'}</span></div><div class="user-detail-row"><span>🏷️ Badge</span><span>${escapeHtml(u.title||'Normal')}</span></div><div class="user-detail-row"><span>🔒 Edit Lock</span><span>${u.locked?'Yes':'No'}</span></div>${u.note?`<div class="user-detail-row"><span>📝 Note</span><span>${escapeHtml(u.note)}</span></div>`:''}`;
+ const safe=JSON.stringify(name);
+ document.getElementById('userActionsGrid').innerHTML=`<button class="btn btn-sm ${u.banned?'btn-success':'btn-danger'}" onclick='toggleBan(${safe})'>${u.banned?'✅ Unban':'🚫 Ban'}</button><button class="btn btn-sm ${u.locked?'btn-success':'btn-warn'}" onclick='toggleLock(${safe})'>${u.locked?'🔓 Unlock Edit':'🔒 Lock Edit'}</button><button class="btn btn-sm btn-info" onclick='setTitle(${safe},"VIP")'>⭐ VIP</button><button class="btn btn-sm btn-info" onclick='setTitle(${safe},"VERIFIED")'>✅ Verified</button><button class="btn btn-sm btn-secondary" onclick='setTitle(${safe},"")'>✖️ Remove Badge</button><button class="btn btn-sm btn-secondary" onclick='addNote(${safe})'>📝 Note</button><button class="btn btn-sm btn-warn" onclick='forceHideUserWishes(${safe})'>👁️ Hide সব Wish</button><button class="btn btn-sm btn-info" onclick='forceShowUserWishes(${safe})'>👁️ Show সব Wish</button><button class="btn btn-sm btn-info" onclick='sendDirectMsg(${safe})'>💬 Message</button><button class="btn btn-sm btn-danger" onclick='deleteUser(${safe})'>🗑️ Delete User</button>`;
+ document.getElementById('userModal').classList.add('active');
+}
+function closeUserModal(){document.getElementById('userModal').classList.remove('active');}
+function toggleBan(name){const u=getUsers();const x=u.find(v=>v.name===name);if(x)x.banned=!x.banned;setUsers(u);refreshAll();openUserModal(name);}
+function toggleLock(name){const u=getUsers();const x=u.find(v=>v.name===name);if(x)x.locked=!x.locked;setUsers(u);refreshAll();openUserModal(name);}
+function setTitle(name,title){const u=getUsers(),x=u.find(v=>v.name===name);if(x)x.title=title;setUsers(u);refreshAll();openUserModal(name);}
+function addNote(name){const u=getUsers(),x=u.find(v=>v.name===name);if(!x)return;const note=prompt('Note:',x.note||'');if(note===null)return;x.note=note;setUsers(u);openUserModal(name);}
+function forceHideUserWishes(name){const w=getWishes();w.forEach(x=>{if(x.senderName===name)x.hidden=true});setWishes(w);refreshAll();alert('এই User-এর Wish লুকানো হয়েছে।');}
+function forceShowUserWishes(name){const w=getWishes();w.forEach(x=>{if(x.senderName===name)x.hidden=false});setWishes(w);refreshAll();alert('এই User-এর Wish দেখানো হয়েছে।');}
+function sendDirectMsg(name){closeUserModal();switchTab('messages',document.querySelectorAll('.tab-btn')[3]);document.getElementById('msgToCustom').value=name;document.getElementById('msgText').focus();}
+function deleteUser(name){if(!confirm('⚠️ "'+name+'" কে ডিলিট করবেন? তার সব Wish-ও মুছে যাবে!'))return;setUsers(getUsers().filter(u=>u.name!==name));setWishes(getWishes().filter(w=>w.senderName!==name));closeUserModal();refreshAll();}
+
+function refreshWishes(){
+ const wishes=getWishes(),tbody=document.getElementById('wishesTable');
+ if(!wishes.length){tbody.innerHTML='<tr><td colspan="6" class="empty">এখনো কোনো Wish নেই</td></tr>';return;}
+ tbody.innerHTML=wishes.map((w,i)=>`<tr><td>${escapeHtml(w.receiverName||w.receiver||'—')}</td><td>${escapeHtml(w.senderName||'—')}</td><td>${escapeHtml((w.message||'').slice(0,70))}${(w.message||'').length>70?'…':''}</td><td>${Number(w.views)||0}</td><td>${w.hidden?'<span class="badge badge-hidden">Hidden</span>':'<span class="badge badge-active">Visible</span>'}</td><td><button class="btn btn-sm btn-info" onclick="editWish('${w.id||i}')">✏️ Edit</button><button class="btn btn-sm btn-warn" onclick="toggleWishHidden('${w.id||i}')">${w.hidden?'Show':'Hide'}</button><button class="btn btn-sm btn-danger" onclick="deleteWish('${w.id||i}')">Delete</button></td></tr>`).join('');
+}
+function findWishIndex(id){return getWishes().findIndex((w,i)=>String(w.id||i)===String(id));}
+function editWish(id){const w=getWishes(),i=findWishIndex(id);if(i<0)return;editingWishId=String(w[i].id||i);document.getElementById('adminEditReceiver').value=w[i].receiverName||w[i].receiver||'';document.getElementById('adminEditBirthDate').value=w[i].birthDate||'';document.getElementById('adminEditMessage').value=w[i].message||'';document.getElementById('wishEditModal').classList.add('active');}
+function closeWishEdit(){document.getElementById('wishEditModal').classList.remove('active');editingWishId=null;}
+function adminSaveWishEdit(){if(editingWishId===null)return;const w=getWishes(),i=findWishIndex(editingWishId);if(i<0)return;w[i].receiverName=document.getElementById('adminEditReceiver').value.trim();w[i].birthDate=document.getElementById('adminEditBirthDate').value;w[i].message=document.getElementById('adminEditMessage').value.trim();setWishes(w);closeWishEdit();refreshAll();alert('Wish আপডেট হয়েছে।');}
+function toggleWishHidden(id){const w=getWishes(),i=findWishIndex(id);if(i<0)return;w[i].hidden=!w[i].hidden;setWishes(w);refreshAll();}
+function deleteWish(id){if(!confirm('এই Wish ডিলিট করবেন?'))return;const w=getWishes(),i=findWishIndex(id);if(i>=0)w.splice(i,1);setWishes(w);refreshAll();}
+function deleteAllWishes(){if(!confirm('সব Wish স্থায়ীভাবে ডিলিট করবেন?'))return;setWishes([]);refreshAll();}
+function deleteAllUsers(){if(!confirm('সব User স্থায়ীভাবে ডিলিট করবেন?'))return;setUsers([]);refreshAll();}
+function resetAll(){if(!confirm('সতর্কতা: সব DXA data, music ও announcement মুছে যাবে। চালিয়ে যাবেন?'))return;['dxaWishes','dxaUsers','dxaMessages','dxaMusicUrl','dxaAnnouncement'].forEach(k=>localStorage.removeItem(k));refreshAll();alert('Local data reset হয়েছে।');}
+function refreshMusicBox(){const url=localStorage.getItem('dxaMusicUrl')||'';document.getElementById('currentMusicBox').textContent=url?'বর্তমান Music URL: '+url:'এখনো Music URL সেট করা হয়নি।';document.getElementById('musicUrlInput').value=url;}
+function saveMusic(){const url=document.getElementById('musicUrlInput').value.trim();if(url&&!/^https?:\/\/\S+$/i.test(url)){alert('সঠিক http/https URL দিন।');return;}localStorage.setItem('dxaMusicUrl',url);refreshMusicBox();alert('এই ব্রাউজারে Music URL সংরক্ষণ হয়েছে।');}
+function previewMusic(){const url=document.getElementById('musicUrlInput').value.trim();if(!url){alert('আগে Music URL দিন।');return;}const a=document.getElementById('musicPreview');a.src=url;a.load();a.play().catch(()=>alert('Preview চালু হয়নি। অডিও URL পরীক্ষা করুন এবং Play চাপুন।'));}
+function resetMusic(){if(!confirm('Music URL reset করবেন?'))return;localStorage.removeItem('dxaMusicUrl');const a=document.getElementById('musicPreview');a.pause();a.removeAttribute('src');a.load();refreshMusicBox();}
+function saveAnnounce(){localStorage.setItem('dxaAnnouncement',document.getElementById('announceInput').value.trim());refreshAnnounce();alert('Announcement এই ব্রাউজারে সংরক্ষণ হয়েছে।');}
+function clearAnnounce(){if(!confirm('Announcement মুছবেন?'))return;localStorage.removeItem('dxaAnnouncement');refreshAnnounce();}
+function refreshAnnounce(){const a=localStorage.getItem('dxaAnnouncement')||'';document.getElementById('announceInput').value=a;document.getElementById('announcePreview').textContent=a||'এখানে ঘোষণার preview দেখাবে।';}
+function refreshMessageSelect(){const s=document.getElementById('msgTo'),old=s.value;const users=getUsers();s.innerHTML='<option value="all">🌍 সব User</option>'+users.map(u=>`<option value="${escapeHtml(u.name)}">${escapeHtml(u.name)}</option>`).join('');if([...s.options].some(o=>o.value===old))s.value=old;}
+function sendMessage(){const text=document.getElementById('msgText').value.trim();if(!text){alert('মেসেজ লিখুন।');return;}const custom=document.getElementById('msgToCustom').value.trim(),to=custom||document.getElementById('msgTo').value;const m=getMessages();m.unshift({id:makeId(),to,text,createdAt:new Date().toISOString()});setMessages(m);document.getElementById('msgText').value='';document.getElementById('msgToCustom').value='';refreshAll();alert('মেসেজ local storage-এ সংরক্ষণ হয়েছে। Shared user site-এ পাঠাতে backend দরকার।');}
+function refreshMessagesList(){const m=getMessages(),el=document.getElementById('messagesList');if(!m.length){el.innerHTML='<div class="empty">এখনো কোনো মেসেজ নেই</div>';return;}el.innerHTML=m.map(x=>`<div class="msg-item"><div class="from">To: ${escapeHtml(x.to)}</div><div class="time">${escapeHtml(x.createdAt?new Date(x.createdAt).toLocaleString('bn-BD'):'')}</div><div class="text">${escapeHtml(x.text)}</div><button class="btn btn-sm btn-danger" onclick="deleteMessage('${x.id}')">Delete</button></div>`).join('');}
+function deleteMessage(id){setMessages(getMessages().filter(x=>x.id!==id));refreshAll();}
+function clearAllMessages(){if(!confirm('সব মেসেজ মুছবেন?'))return;setMessages([]);refreshAll();}
+function refreshStorage(){const keys=['dxaWishes','dxaUsers','dxaMessages','dxaMusicUrl','dxaAnnouncement'];let total=0;const details=keys.map(k=>{const v=localStorage.getItem(k)||'';total+=new Blob([v]).size;return `<div>${escapeHtml(k)}: ${(new Blob([v]).size/1024).toFixed(2)} KB</div>`}).join('');document.getElementById('storageInfo').innerHTML=details+`<hr style="margin:8px 0;border-color:#ffffff22"><b>মোট ব্যবহৃত storage: ${(total/1024).toFixed(2)} KB</b>`;}
+function exportData(){const data={wishes:getWishes(),users:getUsers(),messages:getMessages(),musicUrl:localStorage.getItem('dxaMusicUrl')||'',announcement:localStorage.getItem('dxaAnnouncement')||'',exportedAt:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dxa-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);}
+</script>
+</body>
+</html>
